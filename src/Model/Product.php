@@ -17,7 +17,7 @@ use Zenwalker\CommerceML\Collections\SpecificationCollection;
  * @property ImageCollection images
  * @property Offer offer
  * @property Offer[] offers
- * @property Group group
+ * @property string group
  * @property RequisiteCollection requisites
  * @property Price[] prices
  * @property PropertyCollection properties
@@ -42,7 +42,7 @@ class Product extends Simple
      */
     protected $prices;
     /**
-     * @var Group
+     * @var string
      */
     protected $group;
 
@@ -89,7 +89,7 @@ class Product extends Simple
     }
 
     /**
-     * @return Group
+     * @return string
      */
     public function getGroup()
     {
@@ -99,7 +99,9 @@ class Product extends Simple
             }
             $groupId = (string)$this->Группы->Ид;
             $this->group = $this->owner->classifier->getGroupById($groupId);
+            $this->group = $groupId;
         }
+
         return $this->group;
     }
 

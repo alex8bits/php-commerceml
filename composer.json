@@ -1,7 +1,7 @@
 {
-  "name": "carono/commerceml",
+  "name": "alexnsk83/commerceml",
   "type": "library",
-  "homepage": "https://github.com/zenwalker/php-commerceml",
+  "homepage": "https://github.com/alexnsk83/php-commerceml",
   "description": "Library for parsing CommerceML files",
   "keywords": [
     "commerceml",
@@ -18,6 +18,11 @@
       "homepage": "http://carono.ru",
       "name": "Aleksandr Kasyanov",
       "email": "info@carono.ru"
+    },
+    {
+      "name": "Aleksey Balobanov",
+      "email": "jalex21@mail.ru",
+      "role": "contributor"
     }
   ],
   "autoload": {
@@ -27,9 +32,16 @@
     }
   },
   "require": {
+    "php": ">=8.0",
     "ext-SimpleXML": "*"
   },
   "require-dev": {
-    "phpunit/phpunit": "^7.0"
-  }
+    "phpunit/phpunit": "^9.5 || ^10.0"
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/alexnsk83/php-commerceml.git"
+    }
+  ]
 }

@@ -4,6 +4,7 @@
 namespace Zenwalker\CommerceML\Collections;
 
 
+use Illuminate\Support\Facades\Log;
 use Zenwalker\CommerceML\Model\Property;
 use Zenwalker\CommerceML\Model\Simple;
 
@@ -32,10 +33,13 @@ class PropertyCollection extends Simple
     {
         foreach ($this->xml->ЗначенияСвойства as $property) {
             $properties = $this->owner->classifier->getProperties();
-            $object = clone $properties->getById((string)$property->Ид);
-            $object->productId = (string)$this->xpath('..')[0]->Ид;
-            $object->init();
-            $this->append($object);
+            $properties_by_id = $properties->getById((string)$property->Ид);
+            if ($properties_by_id) {
+                $object = clone $properties->getById((string)$property->Ид);
+                $object->productId = (string)$this->xpath('..')[0]->Ид;
+                $object->init();
+                $this->append($object);
+            }
         }
     }
 

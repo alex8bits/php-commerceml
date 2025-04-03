@@ -24,6 +24,8 @@ class Classifier extends Simple
      */
     protected $properties;
 
+    protected $priceTypes;
+
     protected $stockrooms = [];
 
     /**
@@ -64,7 +66,7 @@ class Classifier extends Simple
 
     /**
      * @param $id
-     * @return null|Group
+     * @return null|string
      */
     public function getGroupById($id)
     {
@@ -89,6 +91,19 @@ class Classifier extends Simple
             $this->properties = new PropertyCollection($this->owner, $this->xml->Свойства);
         }
         return $this->properties;
+    }
+
+    /**
+     * @return Simple[]
+     */
+    public function getPriceTypes()
+    {
+        if (empty($this->priceTypes) && $this->xml) {
+            foreach ($this->xpath('//c:ТипыЦен/c:ТипЦены') as $type) {
+                $this->priceTypes[] = new Simple($this->owner, $type);
+            }
+        }
+        return $this->priceTypes;
     }
 
     /**

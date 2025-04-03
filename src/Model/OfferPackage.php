@@ -4,6 +4,8 @@
 namespace Zenwalker\CommerceML\Model;
 
 
+use Illuminate\Support\Facades\Log;
+
 /**
  * Class OfferPackage
  *

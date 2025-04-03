@@ -29,6 +29,10 @@ class CommerceML
      */
     public $ordersXml;
     /**
+     * @var \SimpleXMLElement|false
+     */
+    public $pricesXml;
+    /**
      * @var Catalog
      */
     public $catalog;
@@ -52,6 +56,8 @@ class CommerceML
     public $offersXmlFilePath;
 
     public $ordersXmlFilePath;
+
+    public $pricesXmlFilePath;
 
     /**
      * Add XML files.
@@ -97,6 +103,14 @@ class CommerceML
         $this->ordersXmlFilePath = $file;
         $this->ordersXml = $this->loadXml($file);
         $this->order = new Order($this);
+    }
+
+    public function loadPricesXml($file)
+    {
+        $this->pricesXmlFilePath = $file;
+        $this->pricesXml = $this->loadXml($file);
+        $this->offerPackage = new OfferPackage($this);
+        $this->classifier = new Classifier($this);
     }
 
 

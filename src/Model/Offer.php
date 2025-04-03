@@ -4,6 +4,7 @@
 namespace Zenwalker\CommerceML\Model;
 
 
+use Zenwalker\CommerceML\Collections\PropertyCollection;
 use Zenwalker\CommerceML\Collections\SpecificationCollection;
 
 /**
@@ -22,6 +23,8 @@ class Offer extends Simple
     protected $prices = [];
     protected $stockrooms = [];
     protected $specifications = [];
+    protected $properties = [];
+    protected $rests;
 
     /**
      * @return array|SpecificationCollection
@@ -34,6 +37,15 @@ class Offer extends Simple
         return $this->specifications;
     }
 
+    public function getProperties()
+    {
+        if (!$this->properties) {
+            $this->properties = new PropertyCollection($this->owner, $this->xml->ЗначенияСвойств);
+        }
+
+        return $this->properties;
+    }
+
     /**
      * @return Price
      */
@@ -43,6 +55,14 @@ class Offer extends Simple
             $this->prices = new Price($this->owner, $this->xml->Цены);
         }
         return $this->prices;
+    }
+
+    public function getRests()
+    {
+        if ($this->xml && empty($this->rests) && isset($this->xml->Остатки->Остаток->Количество)) {
+            $this->rests = $this->xml->Остатки->Остаток->Количество;
+        }
+        return $this->rests;
     }
 
     public function getStockrooms()
