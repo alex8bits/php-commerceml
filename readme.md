@@ -10,7 +10,7 @@
 Библиотека для универсального парсинга [CommerceML2](http://v8.1c.ru/edi/edi_stnd/90/92.htm) файлов.
 
 # Установка
-`composer require carono/commerceml`
+`composer require alexnsk83/commerceml`
 
 # Каталог и товары
 
