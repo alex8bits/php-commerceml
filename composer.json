@@ -1,7 +1,7 @@
 {
-  "name": "alexnsk83/commerceml",
+  "name": "alex8bits/commerceml",
   "type": "library",
-  "homepage": "https://github.com/alexnsk83/php-commerceml",
+  "homepage": "https://github.com/alex8bits/php-commerceml",
   "description": "Library for parsing CommerceML files",
   "keywords": [
     "commerceml",
@@ -41,7 +41,7 @@
   "repositories": [
     {
       "type": "vcs",
-      "url": "https://github.com/alexnsk83/php-commerceml.git"
+      "url": "https://github.com/alex8bits/php-commerceml.git"
     }
   ]
 }
