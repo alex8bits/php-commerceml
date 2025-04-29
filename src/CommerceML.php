@@ -127,6 +127,10 @@ class CommerceML
             return simplexml_load_string(file_get_contents($xml));
         }
 
-        return simplexml_load_string($xml);
+        $xml = preg_replace('/^\xEF\xBB\xBF/', '', $xml);
+        $xml = mb_convert_encoding($xml, 'UTF-8', mb_detect_encoding($xml, 'UTF-8, Windows-1251, ISO-8859-1', true));
+        $simple = simplexml_load_string($xml);
+
+        return $simple;
     }
 }
