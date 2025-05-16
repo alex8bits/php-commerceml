@@ -56,6 +56,7 @@ class Product extends Simple
         if (!$this->properties) {
             $this->properties = new PropertyCollection($this->owner, $this->xml->ЗначенияСвойств);
         }
+
         return $this->properties;
     }
 
