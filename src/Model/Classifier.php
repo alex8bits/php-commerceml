@@ -38,6 +38,10 @@ class Classifier extends Simple
             return $this->owner->importXml->Классификатор;
         }
 
+        if ($this->owner->offersXml && $this->owner->offersXml->Классификатор) {
+            return $this->owner->offersXml->Классификатор;
+        }
+
         return null;
     }
 

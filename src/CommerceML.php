@@ -15,11 +15,11 @@ use Zenwalker\CommerceML\Model\Order;
  */
 class CommerceML
 {
-    public ?SimpleXMLElement $importXml;
+    public ?SimpleXMLElement $importXml = null;
 
-    public ?SimpleXMLElement $offersXml;
+    public ?SimpleXMLElement $offersXml = null;
 
-    public ?SimpleXMLElement $ordersXml;
+    public ?SimpleXMLElement $ordersXml = null;
 
 
     public Catalog $catalog;
