@@ -13,7 +13,7 @@ use Zenwalker\CommerceML\Model\Simple;
  */
 class RequisiteCollection extends Simple
 {
-    public function init()
+    public function init(): void
     {
         if (isset($this->xml->ЗначениеРеквизита)) {
             foreach ($this->xml->ЗначениеРеквизита as $requisite) {

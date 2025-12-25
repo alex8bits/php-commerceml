@@ -4,11 +4,11 @@ namespace Zenwalker\CommerceML\Model;
 
 class Stockroom extends Simple
 {
-    private $_packageStockroom;
+    private Stockroom $_packageStockroom;
 
-    public function getPackageStockroom()
+    public function getPackageStockroom(): Stockroom|static
     {
-        if ($this->_packageStockroom) {
+        if (isset($this->_packageStockroom)) {
             return $this->_packageStockroom;
         }
         $id = $this->id;
@@ -16,7 +16,7 @@ class Stockroom extends Simple
         return $this->_packageStockroom = new static($this->owner, $xml);
     }
 
-    public function propertyAliases()
+    public function propertyAliases(): array
     {
         return array_merge(parent::propertyAliases(), [
             'ИдСклада' => 'id',

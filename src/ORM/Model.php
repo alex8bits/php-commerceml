@@ -1,7 +1,12 @@
-<?php namespace Zenwalker\CommerceML\ORM;
+<?php
 
+namespace Zenwalker\CommerceML\ORM;
+
+use ArrayObject;
+use SimpleXMLElement;
 use Zenwalker\CommerceML\CommerceML;
-use Zenwalker\CommerceML\Model\Simple;
+
+use function array_slice;
 
 /**
  * Class Model
@@ -11,23 +16,33 @@ use Zenwalker\CommerceML\Model\Simple;
  * @property string name
  * @property string value
  */
-abstract class Model extends \ArrayObject
+abstract class Model extends ArrayObject
 {
-    private $namespaceRegistered = false;
+
+    public CommerceML $owner;
+
+    public ?SimpleXMLElement $xml;
+    private bool $namespaceRegistered = false;
 
     /**
-     * @var CommerceML
+     * Model constructor.
+     *
+     * @param CommerceML $owner
+     * @param \SimpleXMLElement|null $xml
      */
-    public $owner;
-    /**
-     * @var \SimpleXMLElement
-     */
-    public $xml;
+    public function __construct(CommerceML $owner, SimpleXMLElement $xml = null)
+    {
+        $this->owner = $owner;
+
+        $this->xml = $xml ?: $this->loadXml();
+        $this->init();
+        parent::__construct();
+    }
 
     /**
      * @return array
      */
-    public function propertyAliases()
+    public function propertyAliases(): array
     {
         return [
             'Ид' => 'id',
@@ -39,51 +54,17 @@ abstract class Model extends \ArrayObject
     /**
      * @return string
      */
-    public function getClearId()
+    public function getClearId(): string
     {
-        return (string)explode('#', $this->id)[0];
+        return explode('#', $this->id)[0];
     }
 
     /**
      * @return string
      */
-    public function getIdSuffix()
+    public function getIdSuffix(): string
     {
-        return (string)\array_slice(explode('#', (string)$this->id), 1)[0];
-    }
-
-    /**
-     * Model constructor.
-     *
-     * @param CommerceML $owner
-     * @param \SimpleXMLElement|null $xml
-     */
-    public function __construct(CommerceML $owner, \SimpleXMLElement $xml = null)
-    {
-        $this->owner = $owner;
-        $this->xml = $xml ?: $this->loadXml();
-        $this->init();
-        parent::__construct();
-    }
-
-    /**
-     * @param $name
-     * @return null|string
-     */
-    protected function getPropertyAlias($name)
-    {
-        $attributes = $this->xml;
-        $aliases = $this->propertyAliases();
-        while ($idx = array_search($name, $aliases)) {
-            if (isset($attributes[$idx])) {
-                return trim((string)$attributes[$idx]);
-            }
-            if (isset($this->xml->{$idx})) {
-                return trim((string)$this->xml->{$idx});
-            }
-            unset($aliases[$idx]);
-        }
-        return null;
+        return (string)array_slice(explode('#', $this->id), 1)[0];
     }
 
     /**
@@ -93,7 +74,7 @@ abstract class Model extends \ArrayObject
     public function __get($name)
     {
         if (method_exists($this, $method = 'get' . ucfirst($name))) {
-            return \call_user_func([$this, $method]);
+            return $this->$method();
         }
         if ($this->xml) {
             $attributes = $this->xml;
@@ -118,25 +99,16 @@ abstract class Model extends \ArrayObject
     {
     }
 
-    public function loadXml()
+    public function loadXml(): ?SimpleXMLElement
     {
         $this->registerNamespace();
+
         return null;
     }
 
-    public function init()
+    public function init(): void
     {
         $this->registerNamespace();
-    }
-
-    protected function registerNamespace()
-    {
-        if ($this->xml && !$this->namespaceRegistered && ($namespaces = $this->xml->getNamespaces())) {
-            $this->namespaceRegistered = true;
-            foreach ($namespaces as $namespace) {
-                $this->xml->registerXPathNamespace('c', $namespace);
-            }
-        }
     }
 
     /**
@@ -150,18 +122,48 @@ abstract class Model extends \ArrayObject
      * @param array $args - Аргументы задаём в бинд стиле ['параметр'=>'значение'] без двоеточия
      * @return \SimpleXMLElement[]
      */
-    public function xpath($path, $args = [])
+    public function xpath(string $path, array $args = []): array
     {
         $this->registerNamespace();
         if (!$this->namespaceRegistered) {
             $path = str_replace('c:', '', $path);
         }
-        if (!empty($args) && \is_array($args)) {
+        if (!empty($args)) {
             foreach ($args as $ka => $kv) {
-                $replace = (false !== strpos($kv, "'") ? ("concat('" . str_replace("'", "',\"'\",'", $kv) . "')") : "'" . $kv . "'");
+                $replace = (str_contains($kv, "'") ? ("concat('" . str_replace("'", "',\"'\",'", $kv) . "')") : "'" . $kv . "'");
                 $path = str_replace(':' . $ka, $replace, $path);
             }
         }
         return $this->xml->xpath($path);
+    }
+
+    /**
+     * @param $name
+     * @return null|string
+     */
+    protected function getPropertyAlias($name): ?string
+    {
+        $attributes = $this->xml;
+        $aliases = $this->propertyAliases();
+        while ($idx = array_search($name, $aliases, true)) {
+            if (isset($attributes[$idx])) {
+                return trim((string)$attributes[$idx]);
+            }
+            if (isset($this->xml->{$idx})) {
+                return trim((string)$this->xml->{$idx});
+            }
+            unset($aliases[$idx]);
+        }
+        return null;
+    }
+
+    protected function registerNamespace(): void
+    {
+        if ($this->xml && !$this->namespaceRegistered && ($namespaces = $this->xml->getNamespaces())) {
+            $this->namespaceRegistered = true;
+            foreach ($namespaces as $namespace) {
+                $this->xml->registerXPathNamespace('c', $namespace);
+            }
+        }
     }
 }

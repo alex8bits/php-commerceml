@@ -4,6 +4,7 @@
 namespace Zenwalker\CommerceML\Model;
 
 
+use SimpleXMLElement;
 use Zenwalker\CommerceML\Collections\PropertyCollection;
 
 /**
@@ -18,20 +19,20 @@ class Classifier extends Simple
     /**
      * @var Group[]
      */
-    protected $groups = [];
+    protected array $groups = [];
     /**
      * @var PropertyCollection
      */
-    protected $properties;
+    protected PropertyCollection $properties;
 
-    protected $priceTypes;
+    protected array $priceTypes;
 
-    protected $stockrooms = [];
+    protected array $stockrooms = [];
 
     /**
      * @return null|\SimpleXMLElement
      */
-    public function loadXml()
+    public function loadXml(): ?SimpleXMLElement
     {
         if ($this->owner->importXml && $this->owner->importXml->Классификатор) {
             return $this->owner->importXml->Классификатор;
@@ -44,7 +45,7 @@ class Classifier extends Simple
      * @param $id
      * @return \SimpleXMLElement[]
      */
-    public function getReferenceBookById($id)
+    public function getReferenceBookById($id): array
     {
         return $this->xpath('//c:Свойство[c:Ид = :id]/c:ВариантыЗначений/c:Справочник', ['id' => $id]);
     }
@@ -53,7 +54,7 @@ class Classifier extends Simple
      * @param $id
      * @return null|\SimpleXMLElement
      */
-    public function getReferenceBookValueById($id)
+    public function getReferenceBookValueById($id): ?SimpleXMLElement
     {
         if ($id) {
             $xpath = '//c:Свойство/c:ВариантыЗначений/c:Справочник[c:ИдЗначения = :id]';
@@ -66,9 +67,9 @@ class Classifier extends Simple
 
     /**
      * @param $id
-     * @return null|string
+     * @return null|Group
      */
-    public function getGroupById($id)
+    public function getGroupById($id): ?Group
     {
         foreach ($this->getGroups() as $group) {
             if ($group->id === $id) {
@@ -85,9 +86,9 @@ class Classifier extends Simple
     /**
      * @return PropertyCollection
      */
-    public function getProperties()
+    public function getProperties(): PropertyCollection
     {
-        if (!$this->properties) {
+        if (!isset($this->properties)) {
             $this->properties = new PropertyCollection($this->owner, $this->xml->Свойства);
         }
         return $this->properties;
@@ -96,7 +97,7 @@ class Classifier extends Simple
     /**
      * @return Simple[]
      */
-    public function getPriceTypes()
+    public function getPriceTypes(): array
     {
         if (empty($this->priceTypes) && $this->xml) {
             foreach ($this->xpath('//c:ТипыЦен/c:ТипЦены') as $type) {
@@ -109,7 +110,7 @@ class Classifier extends Simple
     /**
      * @return Group[]
      */
-    public function getGroups()
+    public function getGroups(): array
     {
         if (empty($this->groups) && isset($this->xml->Группы->Группа)) {
             foreach ($this->xml->Группы->Группа as $group) {
@@ -122,7 +123,7 @@ class Classifier extends Simple
     /**
      * @return Stockroom[]
      */
-    public function getStockrooms()
+    public function getStockrooms(): array
     {
         if (empty($this->stockrooms) && isset($this->xml->Склады)) {
             foreach ($this->xml->Склады->Склад as $stockroom) {

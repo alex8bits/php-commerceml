@@ -1,5 +1,8 @@
-<?php namespace Zenwalker\CommerceML;
+<?php
 
+namespace Zenwalker\CommerceML;
+
+use SimpleXMLElement;
 use Zenwalker\CommerceML\Model\Catalog;
 use Zenwalker\CommerceML\Model\Classifier;
 use Zenwalker\CommerceML\Model\OfferPackage;
@@ -12,71 +15,44 @@ use Zenwalker\CommerceML\Model\Order;
  */
 class CommerceML
 {
-    public $classCatalog;
-    public $classClassifier;
-    public $classOfferPackage;
+    public ?SimpleXMLElement $importXml;
 
-    /**
-     * @var \SimpleXMLElement|false
-     */
-    public $importXml;
-    /**
-     * @var \SimpleXMLElement|false
-     */
-    public $offersXml;
-    /**
-     * @var \SimpleXMLElement|false
-     */
-    public $ordersXml;
-    /**
-     * @var \SimpleXMLElement|false
-     */
-    public $pricesXml;
-    /**
-     * @var Catalog
-     */
-    public $catalog;
-    /**
-     * @var Classifier
-     */
-    public $classifier;
+    public ?SimpleXMLElement $offersXml;
 
-    /**
-     * @var OfferPackage
-     */
-    public $offerPackage;
+    public ?SimpleXMLElement $ordersXml;
 
-    /**
-     * @var Order
-     */
-    public $order;
 
-    public $importXmlFilePath;
+    public Catalog $catalog;
 
-    public $offersXmlFilePath;
+    public Classifier $classifier;
 
-    public $ordersXmlFilePath;
+    public OfferPackage $offerPackage;
 
-    public $pricesXmlFilePath;
+    public Order $order;
+
+    public string $importXmlFilePath;
+
+    public string $offersXmlFilePath;
+
+    public string $ordersXmlFilePath;
 
     /**
      * Add XML files.
-     *
-     * @param string|bool $importXml
-     * @param string|bool $offersXml
-     * @param bool $ordersXml
      */
-    public function addXmls($importXml = false, $offersXml = false, $ordersXml = false)
+    public function addXmls(?string $importXml = null, ?string $offersXml = null, ?string $ordersXml = null): void
     {
-        $this->loadImportXml($importXml);
-        $this->loadOffersXml($offersXml);
-        $this->loadOrdersXml($ordersXml);
+        if ($importXml !== null) {
+            $this->loadImportXml($importXml);
+        }
+        if ($offersXml !== null) {
+            $this->loadOffersXml($offersXml);
+        }
+        if ($ordersXml !== null) {
+            $this->loadOrdersXml($ordersXml);
+        }
     }
 
-    /**
-     * @param $file
-     */
-    public function loadImportXml($file)
+    public function loadImportXml(string $file): void
     {
         $this->importXmlFilePath = $file;
         $this->importXml = $this->loadXml($file);
@@ -84,10 +60,7 @@ class CommerceML
         $this->classifier = new Classifier($this);
     }
 
-    /**
-     * @param $file
-     */
-    public function loadOffersXml($file)
+    public function loadOffersXml(string $file): void
     {
         $this->offersXmlFilePath = $file;
         $this->offersXml = $this->loadXml($file);
@@ -95,42 +68,38 @@ class CommerceML
         $this->classifier = new Classifier($this);
     }
 
-    /**
-     * @param $file
-     */
-    public function loadOrdersXml($file)
+    public function loadOrdersXml(string $file): void
     {
         $this->ordersXmlFilePath = $file;
         $this->ordersXml = $this->loadXml($file);
         $this->order = new Order($this);
     }
 
-    public function loadPricesXml($file)
-    {
-        $this->pricesXmlFilePath = $file;
-        $this->pricesXml = $this->loadXml($file);
-        $this->offerPackage = new OfferPackage($this);
-        $this->classifier = new Classifier($this);
-    }
-
-
     /**
      * Load XML form file or string.
      *
      * @param string $xml
      *
-     * @return \SimpleXMLElement|false
+     * @return \SimpleXMLElement|null
      */
-    private function loadXml($xml)
+    private function loadXml(string $xml): ?SimpleXMLElement
     {
         if (is_file($xml)) {
-            return simplexml_load_string(file_get_contents($xml));
+            $xml = file_get_contents($xml);
         }
 
         $xml = preg_replace('/^\xEF\xBB\xBF/', '', $xml);
-        $xml = mb_convert_encoding($xml, 'UTF-8', mb_detect_encoding($xml, 'UTF-8, Windows-1251, ISO-8859-1', true));
-        $simple = simplexml_load_string($xml);
 
-        return $simple;
+        if (extension_loaded('mbstring')) {
+            $detectedEncoding = mb_detect_encoding($xml, ['UTF-8', 'Windows-1251', 'ISO-8859-1'], true);
+
+            $xml = (string)mb_convert_encoding($xml, 'UTF-8', $detectedEncoding);
+        }
+
+        $simpleXml = simplexml_load_string($xml);
+        if ($simpleXml === false) {
+            return null;
+        }
+        return $simpleXml;
     }
 }

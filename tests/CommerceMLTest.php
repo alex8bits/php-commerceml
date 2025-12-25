@@ -3,12 +3,14 @@
 namespace Zenwalker\CommerceML\Tests;
 
 
+use PHPUnit\Framework\Attributes\DataProvider;
+
 class CommerceMLTest extends TestCase
 {
     /**
-     * @dataProvider xmlProvider
      * @param $values
      */
+    #[DataProvider('xmlProvider')]
     public function testAddXmls($values): void
     {
         $this->cml->addXmls($values['import'], $values['offer'], $values['order']);
@@ -18,9 +20,9 @@ class CommerceMLTest extends TestCase
     }
 
     /**
-     * @dataProvider xmlProvider
      * @param $values
      */
+    #[DataProvider('xmlProvider')]
     public function testLoadImportXml($values): void
     {
         $this->cml->loadImportXml($values['import']);
@@ -28,9 +30,9 @@ class CommerceMLTest extends TestCase
     }
 
     /**
-     * @dataProvider xmlProvider
      * @param $values
      */
+    #[DataProvider('xmlProvider')]
     public function testLoadOffersXml($values): void
     {
         $this->cml->loadImportXml($values['offer']);
@@ -38,9 +40,9 @@ class CommerceMLTest extends TestCase
     }
 
     /**
-     * @dataProvider xmlProvider
      * @param $values
      */
+    #[DataProvider('xmlProvider')]
     public function testLoadOrdersXml($values): void
     {
         $this->cml->loadOrdersXml($values['order']);

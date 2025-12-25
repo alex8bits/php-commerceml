@@ -19,22 +19,22 @@ class ProductTest extends ModelTestCase
     /**
      * @var Product
      */
-    protected $product;
+    protected Product $product;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->product = $this->cml->catalog->products[0];
     }
 
-    public function testOffers()
+    public function testOffers(): void
     {
         $product = $this->product;
         $this->assertCount(2, $product->offers);
         $this->assertInstanceOf(Offer::class, $product->offers[0]);
     }
 
-    public function testOfferPrice()
+    public function testOfferPrice(): void
     {
         /**
          * @var Price $price
@@ -46,7 +46,7 @@ class ProductTest extends ModelTestCase
         $this->assertEquals('1 719 RUB за пара', $price->performance);
     }
 
-    public function testImages()
+    public function testImages(): void
     {
         $images = $this->product->images;
         $this->assertCount(3, $images);
@@ -58,7 +58,7 @@ class ProductTest extends ModelTestCase
 
     }
 
-    public function testRequisites()
+    public function testRequisites(): void
     {
         $requisites = $this->product->requisites;
         $this->assertCount(4, $requisites);
@@ -67,13 +67,13 @@ class ProductTest extends ModelTestCase
         $this->assertEquals('Обувь', $requisites[0]->value);
     }
 
-    public function testGroup()
+    public function testGroup(): void
     {
-        $this->assertEquals('e5a4c309-a659-11dd-acee-0015e9b8c48d', $this->product->group->id);
-        $this->assertEquals('453d6e3a-7233-11e0-8636-0011951d229d', $this->product->group->parent->id);
+        $this->assertEquals('e5a4c309-a659-11dd-acee-0015e9b8c48d', $this->product->getGroup()->id);
+        $this->assertEquals('453d6e3a-7233-11e0-8636-0011951d229d', $this->product->getGroup()->getParent()->id);
     }
 
-    public function testProperties()
+    public function testProperties(): void
     {
         $this->assertEquals('Производитель', $this->product->properties[0]->name);
         $this->assertEquals('Обувной комбинат', $this->product->properties[0]->value);
@@ -81,7 +81,7 @@ class ProductTest extends ModelTestCase
         $this->assertEmpty($this->product->getProperties()->getById('wrong-id'));
     }
 
-    public function testPropertyValues()
+    public function testPropertyValues(): void
     {
         $id = (string)$this->product->properties[0]->availableValues[5]->ИдЗначения;
         $this->assertEquals('444bbebb-6b18-11e0-9819-e0cb4ed5eed4', $id);

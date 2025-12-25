@@ -13,7 +13,7 @@ use Zenwalker\CommerceML\Model\Simple;
  */
 class SpecificationCollection extends Simple
 {
-    public function init()
+    public function init(): void
     {
         if (isset($this->xml->ХарактеристикаТовара)) {
             foreach ($this->xml->ХарактеристикаТовара as $specification) {

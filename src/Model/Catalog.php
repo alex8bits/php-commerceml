@@ -3,6 +3,8 @@
 
 namespace Zenwalker\CommerceML\Model;
 
+use SimpleXMLElement;
+
 /**
  * import.xml -> Каталог
  *
@@ -16,13 +18,13 @@ class Catalog extends Simple
     /**
      * @var Product[]
      */
-    protected $products = [];
+    protected array $products = [];
 
     /**
      * @param string $id
      * @return null|Product
      */
-    public function getById($id)
+    public function getById(string $id): ?Product
     {
         foreach ($this->getProducts() as $product) {
             if ($product->id === $id) {
@@ -35,7 +37,7 @@ class Catalog extends Simple
     /**
      * @return Product[]
      */
-    public function getProducts()
+    public function getProducts(): array
     {
         if (empty($this->products) && $this->xml && $this->xml->Товары) {
             foreach ($this->xml->Товары->Товар as $product) {
@@ -46,14 +48,10 @@ class Catalog extends Simple
     }
 
     /**
-     * @return \SimpleXMLElement
+     * @return \SimpleXMLElement|null
      */
-    public function loadXml()
+    public function loadXml(): ?SimpleXMLElement
     {
-        if ($this->owner->importXml) {
-            return $this->owner->importXml->Каталог;
-        }
-
-        return null;
+        return $this->owner->importXml->Каталог ?? null;
     }
 }

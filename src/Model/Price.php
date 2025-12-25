@@ -17,19 +17,20 @@ namespace Zenwalker\CommerceML\Model;
  */
 class Price extends Simple
 {
-    protected $type;
+    protected ?Simple $type = null;
 
     public function __get($name)
     {
-        if ($result = parent::__get($name)) {
-            if ($this->type && ($value = $this->type->{$name})) {
-                return $value;
-            }
+        $result = parent::__get($name);
+
+        if ($result && isset($this->type) && ($value = $this->type->{$name})) {
+            return $value;
         }
+
         return $result;
     }
 
-    public function propertyAliases()
+    public function propertyAliases(): array
     {
         return [
             'Представление' => 'performance',
@@ -41,17 +42,15 @@ class Price extends Simple
         ];
     }
 
-    public function getType()
+    public function getType(): ?Simple
     {
-        if (!$this->type && ($id = $this->id)) {
-            if ($type = $this->owner->offerPackage->xpath('//c:ТипЦены[c:Ид = :id]', ['id' => $id])) {
-                $this->type = new Simple($this->owner, $type[0]);
-            }
+        if (!isset($this->type) && ($id = $this->id) && $type = $this->owner->offerPackage->xpath('//c:ТипЦены[c:Ид = :id]', ['id' => $id])) {
+            $this->type = new Simple($this->owner, $type[0]);
         }
         return $this->type;
     }
 
-    public function init()
+    public function init(): void
     {
         if ($this->xml && $this->xml->Цена) {
             foreach ($this->xml->Цена as $price) {

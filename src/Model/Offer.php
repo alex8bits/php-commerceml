@@ -4,6 +4,7 @@
 namespace Zenwalker\CommerceML\Model;
 
 
+use SimpleXMLElement;
 use Zenwalker\CommerceML\Collections\PropertyCollection;
 use Zenwalker\CommerceML\Collections\SpecificationCollection;
 
@@ -20,16 +21,16 @@ class Offer extends Simple
     /**
      * @var Price
      */
-    protected $prices = [];
-    protected $stockrooms = [];
-    protected $specifications = [];
-    protected $properties = [];
-    protected $rests;
+    protected Price|array $prices = [];
+    protected array $stockrooms = [];
+    protected SpecificationCollection|array $specifications = [];
+    protected PropertyCollection|array $properties = [];
+    protected ?SimpleXMLElement $rests;
 
     /**
      * @return array|SpecificationCollection
      */
-    public function getSpecifications()
+    public function getSpecifications(): SpecificationCollection|array
     {
         if (empty($this->specifications)) {
             $this->specifications = new SpecificationCollection($this->owner, $this->ХарактеристикиТовара);
@@ -37,7 +38,7 @@ class Offer extends Simple
         return $this->specifications;
     }
 
-    public function getProperties()
+    public function getProperties(): PropertyCollection|array
     {
         if (!$this->properties) {
             $this->properties = new PropertyCollection($this->owner, $this->xml->ЗначенияСвойств);
@@ -49,7 +50,7 @@ class Offer extends Simple
     /**
      * @return Price
      */
-    public function getPrices()
+    public function getPrices(): Price
     {
         if ($this->xml && empty($this->prices)) {
             $this->prices = new Price($this->owner, $this->xml->Цены);
@@ -57,7 +58,7 @@ class Offer extends Simple
         return $this->prices;
     }
 
-    public function getRests()
+    public function getRests(): ?SimpleXMLElement
     {
         if ($this->xml && empty($this->rests) && isset($this->xml->Остатки->Остаток->Количество)) {
             $this->rests = $this->xml->Остатки->Остаток->Количество;
@@ -65,7 +66,7 @@ class Offer extends Simple
         return $this->rests;
     }
 
-    public function getStockrooms()
+    public function getStockrooms(): array
     {
         if ($this->xml && empty($this->stockrooms)) {
             foreach ($this->xml->Склад as $stockroom) {

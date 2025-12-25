@@ -4,6 +4,8 @@
 namespace Zenwalker\CommerceML\Model;
 
 
+use SimpleXMLElement;
+
 /**
  * Class Order
  *
@@ -14,9 +16,9 @@ class Order extends Simple
     /**
      * @var Document[]
      */
-    public $documents = [];
+    public array $documents = [];
 
-    public function loadXml()
+    public function loadXml(): ?SimpleXMLElement
     {
         if ($this->owner->ordersXml) {
             foreach ($this->owner->ordersXml->Документ as $document) {

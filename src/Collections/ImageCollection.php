@@ -14,7 +14,7 @@ use Zenwalker\CommerceML\Model\Simple;
  */
 class ImageCollection extends Simple
 {
-    public function init()
+    public function init(): void
     {
         if ($this->xml) {
             foreach ($this->xml as $image) {

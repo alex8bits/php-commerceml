@@ -10,13 +10,13 @@
  */
 class Property extends Simple
 {
-    public $productId;
-    protected $_value;
+    public string $productId;
+    protected Simple $_value;
 
     /**
      * @return \SimpleXMLElement[]
      */
-    public function getAvailableValues()
+    public function getAvailableValues(): array
     {
         return $this->owner->classifier->getReferenceBookById($this->id);
     }
@@ -24,12 +24,12 @@ class Property extends Simple
     /**
      * @return Simple|null
      */
-    public function getValueModel()
+    public function getValueModel(): ?Simple
     {
-        if ($this->productId && !$this->_value && ($product = $this->owner->catalog->getById($this->productId))) {
+        if (isset($this->productId) && !isset($this->_value) && ($product = $this->owner->catalog->getById($this->productId))) {
             $xpath = "c:ЗначенияСвойств/c:ЗначенияСвойства[c:Ид = '{$this->id}']";
             $valueXml = $product->xpath($xpath)[0];
-            $value = $this->_value = (string)$valueXml->Значение;
+            $value = (string)$valueXml->Значение;
             if ($property = $this->owner->classifier->getReferenceBookValueById($value)) {
                 $this->_value = new Simple($this->owner, $property);
             } else {
@@ -39,8 +39,8 @@ class Property extends Simple
         return $this->_value;
     }
 
-    public function getValue()
+    public function getValue(): ?string
     {
-        return $this->getValueModel() ? (string)$this->getValueModel()->value : null;
+        return $this->getValueModel() ? $this->getValueModel()->value : null;
     }
 }

@@ -3,8 +3,6 @@
 
 namespace Zenwalker\CommerceML\Collections;
 
-
-use Illuminate\Support\Facades\Log;
 use Zenwalker\CommerceML\Model\Property;
 use Zenwalker\CommerceML\Model\Simple;
 
@@ -19,7 +17,7 @@ class PropertyCollection extends Simple
      * @param $id
      * @return Property|null
      */
-    public function getById($id)
+    public function getById($id): ?Property
     {
         foreach ($this as $property) {
             if ($property->id === (string)$id) {
@@ -29,28 +27,28 @@ class PropertyCollection extends Simple
         return null;
     }
 
-    protected function loadPropertiesValue()
+    protected function loadPropertiesValue(): void
     {
         foreach ($this->xml->ЗначенияСвойства as $property) {
             $properties = $this->owner->classifier->getProperties();
-            $properties_by_id = $properties->getById((string)$property->Ид);
-            if ($properties_by_id) {
-                $object = clone $properties->getById((string)$property->Ид);
-                $object->productId = (string)$this->xpath('..')[0]->Ид;
-                $object->init();
-                $this->append($object);
+            $object = $properties->getById((string)$property->Ид);
+            if ($object) {
+                $clone = clone $object;
+                $clone->productId = (string)$this->xpath('..')[0]->Ид;
+                $clone->init();
+                $this->append($clone);
             }
         }
     }
 
-    protected function loadProperties()
+    protected function loadProperties(): void
     {
         foreach ($this->xml->Свойство as $property) {
             $this->append(new Property($this->owner, $property));
         }
     }
 
-    public function init()
+    public function init(): void
     {
         if (isset($this->xml->ЗначенияСвойства)) {
             $this->loadPropertiesValue();

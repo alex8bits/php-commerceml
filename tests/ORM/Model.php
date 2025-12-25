@@ -15,7 +15,7 @@ class Model extends ModelTestCase
      *
      * @see \Zenwalker\CommerceML\ORM\Model::propertyAliases
      */
-    public function testAttributeAliases()
+    public function testAttributeAliases(): void
     {
         $product = $this->cml->catalog->products[0];
         $requisite = $product->requisites[0];

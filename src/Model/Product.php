@@ -1,4 +1,6 @@
-<?php namespace Zenwalker\CommerceML\Model;
+<?php
+
+namespace Zenwalker\CommerceML\Model;
 
 use Zenwalker\CommerceML\Collections\ImageCollection;
 use Zenwalker\CommerceML\Collections\PropertyCollection;
@@ -27,33 +29,33 @@ class Product extends Simple
     /**
      * @var PropertyCollection Свойства продукта
      */
-    protected $properties;
+    protected PropertyCollection $properties;
     /**
      * @var RequisiteCollection
      */
-    protected $requisites;
+    protected RequisiteCollection $requisites;
     /**
      * @var SpecificationCollection
      */
-    protected $specifications;
+    protected SpecificationCollection $specifications;
 
     /**
      * @var Price
      */
-    protected $prices;
+    protected Price $prices;
     /**
-     * @var string
+     * @var \Zenwalker\CommerceML\Model\Group|null
      */
-    protected $group;
+    protected ?Group $group;
 
-    protected $images;
+    protected ImageCollection $images;
 
     /**
      * @return PropertyCollection<Property>
      */
-    public function getProperties()
+    public function getProperties(): PropertyCollection
     {
-        if (!$this->properties) {
+        if (!isset($this->properties)) {
             $this->properties = new PropertyCollection($this->owner, $this->xml->ЗначенияСвойств);
         }
 
@@ -64,7 +66,7 @@ class Product extends Simple
      * @return SpecificationCollection|null|array
      * @deprecated will removed in 0.3.0
      */
-    public function getSpecifications()
+    public function getSpecifications(): SpecificationCollection|array|null
     {
         return $this->getOffer() ? $this->getOffer()->getSpecifications() : null;
     }
@@ -73,7 +75,7 @@ class Product extends Simple
      * @return Price[]
      * @deprecated will removed in 0.3.0
      */
-    public function getPrices()
+    public function getPrices(): array
     {
         return $this->getOffer() ? $this->getOffer()->getPrices() : [];
     }
@@ -81,26 +83,25 @@ class Product extends Simple
     /**
      * @return RequisiteCollection
      */
-    public function getRequisites()
+    public function getRequisites(): RequisiteCollection
     {
-        if (!$this->requisites) {
+        if (!isset($this->requisites)) {
             $this->requisites = new RequisiteCollection($this->owner, $this->xml->ЗначенияРеквизитов);
         }
         return $this->requisites;
     }
 
     /**
-     * @return string
+     * @return \Zenwalker\CommerceML\Model\Group|null
      */
-    public function getGroup()
+    public function getGroup(): ?Group
     {
-        if (!$this->group) {
+        if (!isset($this->group)) {
             if (!$this->Группы) {
                 return null;
             }
             $groupId = (string)$this->Группы->Ид;
             $this->group = $this->owner->classifier->getGroupById($groupId);
-            $this->group = $groupId;
         }
 
         return $this->group;
@@ -110,7 +111,7 @@ class Product extends Simple
      * @return null|Offer
      * @deprecated will removed in 0.3.0
      */
-    public function getOffer()
+    public function getOffer(): ?Offer
     {
         return $this->owner->offerPackage->getOfferById($this->getClearId());
     }
@@ -118,7 +119,7 @@ class Product extends Simple
     /**
      * @return Offer[]
      */
-    public function getOffers()
+    public function getOffers(): array
     {
         return $this->owner->offerPackage->getOffersById($this->getClearId());
     }
@@ -126,9 +127,9 @@ class Product extends Simple
     /**
      * @return ImageCollection
      */
-    public function getImages()
+    public function getImages(): ImageCollection
     {
-        if (!$this->images) {
+        if (!isset($this->images)) {
             $this->images = new ImageCollection($this->owner, $this->xml->Картинка);
         }
         return $this->images;

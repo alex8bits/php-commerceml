@@ -3,8 +3,7 @@
 
 namespace Zenwalker\CommerceML\Model;
 
-
-use Illuminate\Support\Facades\Log;
+use SimpleXMLElement;
 
 /**
  * Class OfferPackage
@@ -18,33 +17,29 @@ class OfferPackage extends Simple
     /**
      * @var Offer[]
      */
-    protected $offers = [];
-    protected $stockrooms = [];
+    protected array $offers = [];
+    protected array $stockrooms = [];
     /**
      * @var Simple[] array
      */
-    protected $priceTypes = [];
+    protected array $priceTypes = [];
 
-    public function propertyAliases()
+    public function propertyAliases(): array
     {
         return array_merge(parent::propertyAliases(), [
             'СодержитТолькоИзменения' => 'containsOnlyChanges'
         ]);
     }
 
-    public function loadXml()
+    public function loadXml(): ?SimpleXMLElement
     {
-        if ($this->owner->offersXml) {
-            return $this->owner->offersXml->ПакетПредложений;
-        }
-
-        return null;
+        return $this->owner->offersXml->ПакетПредложений ?? null;
     }
 
     /**
      * @return Offer[]
      */
-    public function getOffers()
+    public function getOffers(): array
     {
         if (empty($this->offers) && $this->xml && $this->xml->Предложения) {
             foreach ($this->xml->Предложения->Предложение as $offer) {
@@ -57,7 +52,7 @@ class OfferPackage extends Simple
     /**
      * @return Simple[]
      */
-    public function getPriceTypes()
+    public function getPriceTypes(): array
     {
         if (empty($this->priceTypes) && $this->xml) {
             foreach ($this->xpath('//c:ТипыЦен/c:ТипЦены') as $type) {
@@ -72,7 +67,7 @@ class OfferPackage extends Simple
      * @return null|Offer
      * @deprecated will removed in 0.3.0
      */
-    public function getOfferById($id)
+    public function getOfferById($id): ?Offer
     {
         foreach ($this->getOffers() as $offer) {
             if ($offer->getClearId() === $id) {
@@ -86,7 +81,7 @@ class OfferPackage extends Simple
      * @param $id
      * @return Offer[]
      */
-    public function getOffersById($id)
+    public function getOffersById($id): array
     {
         $result = [];
         foreach ($this->getOffers() as $offer) {
@@ -100,7 +95,7 @@ class OfferPackage extends Simple
     /**
      * @return Stockroom[]
      */
-    public function getStockrooms()
+    public function getStockrooms(): array
     {
         if (empty($this->stockrooms) && isset($this->xml->Склады)) {
             foreach ($this->xml->Склады->Склад as $stockroom) {
