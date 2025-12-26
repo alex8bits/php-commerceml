@@ -21,7 +21,7 @@ abstract class Model extends ArrayObject
 
     public CommerceML $owner;
 
-    public ?SimpleXMLElement $xml;
+    public ?SimpleXMLElement $xml = null;
     private bool $namespaceRegistered = false;
 
     /**

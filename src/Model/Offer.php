@@ -25,7 +25,7 @@ class Offer extends Simple
     protected array $stockrooms = [];
     protected SpecificationCollection|array $specifications = [];
     protected PropertyCollection|array $properties = [];
-    protected ?SimpleXMLElement $rests;
+    protected ?float $rests = null;
 
     /**
      * @return array|SpecificationCollection
@@ -58,10 +58,10 @@ class Offer extends Simple
         return $this->prices;
     }
 
-    public function getRests(): ?SimpleXMLElement
+    public function getRests(): ?float
     {
         if ($this->xml && empty($this->rests) && isset($this->xml->Остатки->Остаток->Количество)) {
-            $this->rests = $this->xml->Остатки->Остаток->Количество;
+            $this->rests = (float) $this->xml->Остатки->Остаток->Количество;
         }
         return $this->rests;
     }
