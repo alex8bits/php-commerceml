@@ -25,7 +25,7 @@ class Classifier extends Simple
      */
     protected PropertyCollection $properties;
 
-    protected array $priceTypes;
+    protected array $priceTypes = [];
 
     protected array $stockrooms = [];
 

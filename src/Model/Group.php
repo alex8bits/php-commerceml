@@ -21,7 +21,7 @@ class Group extends Simple
     /**
      * @var Group
      */
-    protected Group $parent;
+    protected ?Group $parent = null;
 
     /**
      * @return Group[]
@@ -39,7 +39,7 @@ class Group extends Simple
     /**
      * @return Group
      */
-    public function getParent(): Group
+    public function getParent(): ?Group
     {
         if (!isset($this->parent)) {
             $parent = $this->xpath('../..')[0];

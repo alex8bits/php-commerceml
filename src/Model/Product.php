@@ -29,31 +29,31 @@ class Product extends Simple
     /**
      * @var PropertyCollection Свойства продукта
      */
-    protected PropertyCollection $properties;
+    protected ?PropertyCollection $properties = null;
     /**
      * @var RequisiteCollection
      */
-    protected RequisiteCollection $requisites;
+    protected ?RequisiteCollection $requisites = null;
     /**
      * @var SpecificationCollection
      */
-    protected SpecificationCollection $specifications;
+    protected ?SpecificationCollection $specifications = null;
 
     /**
      * @var Price
      */
-    protected Price $prices;
+    protected ?Price $prices = null;
     /**
      * @var \Zenwalker\CommerceML\Model\Group|null
      */
-    protected ?Group $group;
+    protected ?Group $group = null;
 
-    protected ImageCollection $images;
+    protected ?ImageCollection $images = null;
 
     /**
      * @return PropertyCollection<Property>
      */
-    public function getProperties(): PropertyCollection
+    public function getProperties(): ?PropertyCollection
     {
         if (!isset($this->properties)) {
             $this->properties = new PropertyCollection($this->owner, $this->xml->ЗначенияСвойств);
@@ -83,7 +83,7 @@ class Product extends Simple
     /**
      * @return RequisiteCollection
      */
-    public function getRequisites(): RequisiteCollection
+    public function getRequisites(): ?RequisiteCollection
     {
         if (!isset($this->requisites)) {
             $this->requisites = new RequisiteCollection($this->owner, $this->xml->ЗначенияРеквизитов);
@@ -127,7 +127,7 @@ class Product extends Simple
     /**
      * @return ImageCollection
      */
-    public function getImages(): ImageCollection
+    public function getImages(): ?ImageCollection
     {
         if (!isset($this->images)) {
             $this->images = new ImageCollection($this->owner, $this->xml->Картинка);
